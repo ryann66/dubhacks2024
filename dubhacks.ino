@@ -13,10 +13,10 @@ const byte ROWS = 4; //four rows
 const byte COLS = 4; //four columns
 //define the cymbols on the buttons of the keypads
 keynum hexaKeys[ROWS][COLS] = {
-  {D,POUND,ZERO,STAR}
+  {D,POUND,ZERO,STAR},
   {C,9,8,7},
   {B,6,5,4},
-  {A,3,2,1},
+  {A,3,2,1}
 };
 byte rowPins[ROWS] = {43, 41, 39, 37}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {42, 40, 38, 36}; //connect to the column pinouts of the keypad
@@ -73,8 +73,6 @@ void setup(){
   
 void loop(){
   keynum kp = customKeypad.waitForKey();
-  //Serial.println("<<<<<<<<<<<<< Read keynum >>>>>>>>>>>>");
-  //Serial.println(kp);
   switch (kp) {
     case A:
       break;
@@ -116,9 +114,6 @@ void printScreen() {
   char* toPrint = max(bufend - LCD_COLS + 1, buf);
   int toPrintLen = strlen(toPrint);
   
-  Serial.println("<<<<<<<<<<<<< To Print >>>>>>>>>>>>");
-  Serial.println(toPrint);
-
   // Allow space for all of toPrint plus the nextChar
   lcd.setCursor(LCD_COLS - 1 - toPrintLen, 0);
   lcd.print(toPrint);
@@ -128,9 +123,6 @@ void printScreen() {
   
   char nextChar = getstkchr();
   lcd.print(nextChar);
-
-  Serial.println("<<<<<<<<<<<<< Next Char >>>>>>>>>>>>");
-  Serial.println(nextChar);
 }
 
 void logPress(keynum k) {
@@ -162,11 +154,6 @@ void clearBuffer() {
 }
 
 char getstkchr() {
-  Serial.println("<<<<<<<<<<<<< stack len >>>>>>>>>>>>");
-  Serial.println(stklen);
-  Serial.println("<<<<<<<<<<<<< stack chr >>>>>>>>>>>>");
-  Serial.println(stkchr);
-
   if (stklen == 0  || stkchr == ZERO) {
     return ' ';
   }
