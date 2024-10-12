@@ -73,8 +73,6 @@ void setup(){
   Serial.begin(9600);
   lcd.begin(LCD_COLS, LCD_ROWS, LCD_5x8DOTS);
   lcd.blink();
-  lcd.println("hello, world!");
-  exit(0);
 }
   
 void loop(){
