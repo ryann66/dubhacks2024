@@ -129,7 +129,10 @@ void deleteChar() {
 }
 
 void clearBuffer() {
-
+  bufend = buf;
+  for (int i = 0; i < BUFLEN; i++) {
+    buf[i] = '\0';
+  }
 }
 
 char getstkchr() {
