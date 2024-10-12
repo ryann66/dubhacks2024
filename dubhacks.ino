@@ -19,6 +19,10 @@ keynum hexaKeys[ROWS][COLS] = {
 byte rowPins[ROWS] = {43, 41, 39, 37}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {40, 38, 36, 34}; //connect to the column pinouts of the keypad
 
+#define MAX_LEN 3
+#define MAX_KEYNUM 9
+char charsOfKeynumLens[MAX_LEN][MAX_KEYNUM] = {{'a', 'b', 'c'}, {'d', 'e', 'f'}}
+
 //initialize an instance of class NewKeypad
 Keypad customKeypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
 
@@ -95,12 +99,18 @@ void flushStack() {
 }
 
 void logPress(keynum k) {
+  // push key onto the stack
   if (stklen && stkchar != k) {
     flushStack();
   }
   stkchar = k;
   stklen++;
-
+  
+  // check if stack is full
+  if (stkchar == 0 || (stklen == 3 && (stkchr == 7 || stkchr == 9)) || stklen == 4) {
+    // stack full
+    flushStack();
+  }
 }
 
 void deleteChar() {
@@ -108,9 +118,22 @@ void deleteChar() {
 }
 
 void clearBuffer() {
-
+  buf[0] = 0;
+  stklen = 0;
 }
 
 char getstkchr() {
-  
+  if (stklen == 0  || stkchr == 0) {
+    return ' ';
+  }
+  if (stklen == 4) {
+    if (stkchr == 7) return 's';
+    if (stkchr == 9) return 'z';
+    // assert unreachable
+  }
+
+  // stklen <= 3
+  uint8_t chr = stkchr - 1;
+  uint8_t len = stklen - 1;
+
 }
