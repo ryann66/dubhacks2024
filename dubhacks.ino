@@ -42,18 +42,44 @@ void flushStack();
 void printScreen();
 
 /**
- * Adds a non-operator character
+ * Adds a non-operator keypress
  */
-void addCharacter(char c);
+void logPress(keynum k);
+
+/**
+ * Removes a character (either clears buffer or deletes char)
+ */
+void deleteChar();
+
+/**
+ * Clears the buffer and empties the stack
+ */
+void clearBuffer();
 
 void setup(){
   Serial.begin(9600);
 }
   
 void loop(){
-  char customKey = customKeypad.getKey();
-  
-  if (customKey){
-    Serial.println(customKey);
+  keynum kp = waitForKey();
+  switch (kp) {
+    case A:
+      break;
+    case B:
+      break;
+    case C:
+      clearBuffer();
+      break;
+    case D:
+      break;
+    case POUND:
+      flushStack();
+      break;
+    case STAR:
+      deleteChar();
+      break;
+    default:
+      logPress(kp);
   }
+  printScreen();
 }
