@@ -30,7 +30,7 @@ LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
 char buf[BUFLEN];
 char* bufend = buf;
 
-char stkchar;
+keynum stkchar;
 uint8_t stklen;
 
 /*
@@ -46,9 +46,25 @@ void flushStack();
 void printScreen();
 
 /**
- * Adds a non-operator character
+ * Adds a non-operator keypress
  */
-void addCharacter(char c);
+void logPress(keynum k);
+
+/**
+ * Removes a character (either clears buffer or deletes char)
+ */
+void deleteChar();
+
+/**
+ * Clears the buffer and empties the stack
+ */
+void clearBuffer();
+
+/**
+ * Gets the char that the current stack represents
+ * returns ' ' if the stack is empty
+ */
+char getstkchr();
 
 void setup(){
   Serial.begin(9600);
@@ -56,10 +72,25 @@ void setup(){
 }
   
 void loop(){
-  char customKey = customKeypad.getKey();
-  
-  if (customKey){
-    Serial.println(customKey);
+  keynum kp = waitForKey();
+  switch (kp) {
+    case A:
+      break;
+    case B:
+      break;
+    case C:
+      clearBuffer();
+      break;
+    case D:
+      break;
+    case POUND:
+      flushStack();
+      break;
+    case STAR:
+      deleteChar();
+      break;
+    default:
+      logPress(kp);
   }
 }
 
@@ -82,4 +113,25 @@ void printScreen() {
   lcd.setCursor(LCD_COLS - 1);
   char nextChar = getstkchar();
   lcd.print(nextChar);
+}
+
+void logPress(keynum k) {
+  if (stklen && stkchar != k) {
+    flushStack();
+  }
+  stkchar = k;
+  stklen++;
+
+}
+
+void deleteChar() {
+
+}
+
+void clearBuffer() {
+
+}
+
+char getstkchr() {
+  
 }
