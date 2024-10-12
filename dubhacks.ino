@@ -98,6 +98,7 @@ void loop(){
 }
 
 void flushStack() {
+  if (stklen == 0) return;
   char c = getstkchr();
   if (bufend - buf < BUFLEN) {
     *bufend++ = c;
