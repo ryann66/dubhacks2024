@@ -138,7 +138,10 @@ void logPress(keynum k) {
 }
 
 void deleteChar() {
+  if (bufend == buf) return;
 
+  bufend--;
+  buf[bufend] = 0;
 }
 
 void clearBuffer() {
