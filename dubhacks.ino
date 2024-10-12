@@ -26,7 +26,7 @@ LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
 
 char buf[BUFLEN];
 
-char stkchar;
+keynum stkchar;
 uint8_t stklen;
 
 /*
@@ -56,6 +56,12 @@ void deleteChar();
  */
 void clearBuffer();
 
+/**
+ * Gets the char that the current stack represents
+ * returns ' ' if the stack is empty
+ */
+char getstkchr();
+
 void setup(){
   Serial.begin(9600);
 }
@@ -82,4 +88,29 @@ void loop(){
       logPress(kp);
   }
   printScreen();
+}
+
+void flushStack() {
+
+}
+
+void logPress(keynum k) {
+  if (stklen && stkchar != k) {
+    flushStack();
+  }
+  stkchar = k;
+  stklen++;
+
+}
+
+void deleteChar() {
+
+}
+
+void clearBuffer() {
+
+}
+
+char getstkchr() {
+  
 }
