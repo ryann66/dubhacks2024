@@ -23,7 +23,7 @@ byte colPins[COLS] = {40, 38, 36, 34}; //connect to the column pinouts of the ke
 
 #define MAX_LEN 3
 #define MAX_KEYNUM 9
-char charsOfKeynumLens[MAX_LEN][MAX_KEYNUM] = {{'a', 'b', 'c'}, {'d', 'e', 'f'}};
+char charsOfKeynumLens[MAX_LEN][MAX_KEYNUM] = {{'a', 'd', 'g', 'j', 'm', 'p', 't', 'w'}, {'b', 'e', 'h', 'k', 'n', 'q', 'u', 'x'}, {'c', 'f', 'i', 'l', 'o', 'r', 'v', 'y'}};
 
 //initialize an instance of class NewKeypad
 Keypad customKeypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
@@ -98,6 +98,7 @@ void loop(){
     default:
       logPress(kp);
   }
+  printScreen();
 }
 
 void flushStack() {
