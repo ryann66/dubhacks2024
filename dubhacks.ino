@@ -102,7 +102,13 @@ void loop(){
 }
 
 void flushStack() {
+  char c = getstkchr();
+  if (bufend - buf < BUFLEN) {
+    *bufend++ = c;
+    *bufend = 0;
+  }
   stklen = 0;
+  return;
 }
 
 void printScreen() {
@@ -157,7 +163,6 @@ char getstkchr() {
   }
 
   // stklen <= 3
-  uint8_t chr = stkchr - 1;
-  uint8_t len = stklen - 1;
-
+  // stkchr <= 9 && stkchr > 0
+  return charsOfKeynumLens[stklen - 1, stkchr - 1];
 }
