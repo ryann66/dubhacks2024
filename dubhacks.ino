@@ -1,6 +1,5 @@
 #include <LiquidCrystal.h>
 #include <Keypad.h>
-#include <algorithm>
 
 #define BUFLEN 256
 #define LCD_COLS 16
@@ -24,7 +23,7 @@ byte colPins[COLS] = {40, 38, 36, 34}; //connect to the column pinouts of the ke
 
 #define MAX_LEN 3
 #define MAX_KEYNUM 9
-char charsOfKeynumLens[MAX_LEN][MAX_KEYNUM] = {{'a', 'b', 'c'}, {'d', 'e', 'f'}}
+char charsOfKeynumLens[MAX_LEN][MAX_KEYNUM] = {{'a', 'b', 'c'}, {'d', 'e', 'f'}};
 
 //initialize an instance of class NewKeypad
 Keypad customKeypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
@@ -34,7 +33,7 @@ LiquidCrystal lcd(13, 12, 11, 10, 9, 8);
 char buf[BUFLEN];
 char* bufend = buf;
 
-keynum stkchar;
+keynum stkchr;
 uint8_t stklen;
 
 /*
@@ -72,11 +71,14 @@ char getstkchr();
 
 void setup(){
   Serial.begin(9600);
-  lcd.begin(LCD_COLS, LCD_ROWS);
+  lcd.begin(LCD_COLS, LCD_ROWS, LCD_5x8DOTS);
+  lcd.blink();
+  lcd.println("hello, world!");
+  exit(0);
 }
   
 void loop(){
-  keynum kp = waitForKey();
+  keynum kp = customKeypad.waitForKey();
   switch (kp) {
     case A:
       break;
@@ -107,28 +109,28 @@ void printScreen() {
   
   // Number chars to print determines cursor loc. Print up to
   // LCD_COLS - 1 chars from buf.
-  char* toPrint = std::max(bufend - LCD_COLS + 1, buf);
+  char* toPrint = max(bufend - LCD_COLS + 1, buf);
   int toPrintLen = strlen(toPrint);
 
   // Allow space for all of toPrint plus the nextChar
   lcd.setCursor(LCD_COLS - 1 - 1 - toPrintLen, 0);
 
   // Print placement character
-  lcd.setCursor(LCD_COLS - 1);
-  char nextChar = getstkchar();
+  lcd.setCursor(LCD_COLS - 1, 0);
+  char nextChar = getstkchr();
   lcd.print(nextChar);
 }
 
 void logPress(keynum k) {
   // push key onto the stack
-  if (stklen && stkchar != k) {
+  if (stklen && stkchr != k) {
     flushStack();
   }
-  stkchar = k;
+  stkchr = k;
   stklen++;
   
   // check if stack is full
-  if (stkchar == 0 || (stklen == 3 && (stkchr == 7 || stkchr == 9)) || stklen == 4) {
+  if (stkchr == 0 || (stklen == 3 && (stkchr == 7 || stkchr == 9)) || stklen == 4) {
     // stack full
     flushStack();
   }
