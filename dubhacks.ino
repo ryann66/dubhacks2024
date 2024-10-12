@@ -147,7 +147,7 @@ void deleteChar() {
   if (bufend == buf) return;
 
   bufend--;
-  buf[bufend] = 0;
+  *bufend = 0;
 }
 
 void clearBuffer() {
