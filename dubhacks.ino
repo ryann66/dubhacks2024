@@ -6,7 +6,7 @@
 #define LCD_ROWS 2
 
 enum keynum : char {
-  STAR = 10, POUND = 11, A = 12, B = 13, C = 14, D = 15
+  STAR = 10, POUND = 11, A = 12, B = 13, C = 14, D = 15, ZERO = 16
 };
 
 const byte ROWS = 4; //four rows
@@ -16,14 +16,10 @@ keynum hexaKeys[ROWS][COLS] = {
   {1,2,3,A},
   {4,5,6,B},
   {7,8,9,C},
-  {STAR,0,POUND,D}
+  {STAR,ZERO,POUND,D}
 };
 byte rowPins[ROWS] = {43, 41, 39, 37}; //connect to the row pinouts of the keypad
-byte colPins[COLS] = {40, 38, 36, 34}; //connect to the column pinouts of the keypad
-
-#define MAX_LEN 3
-#define MAX_KEYNUM 9
-char charsOfKeynumLens[MAX_LEN][MAX_KEYNUM] = {{'a', 'd', 'g', 'j', 'm', 'p', 't', 'w'}, {'b', 'e', 'h', 'k', 'n', 'q', 'u', 'x'}, {'c', 'f', 'i', 'l', 'o', 'r', 'v', 'y'}};
+byte colPins[COLS] = {42, 40, 38, 36}; //connect to the column pinouts of the keypad
 
 //initialize an instance of class NewKeypad
 Keypad customKeypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS); 
@@ -77,6 +73,8 @@ void setup(){
   
 void loop(){
   keynum kp = customKeypad.waitForKey();
+  //Serial.println("<<<<<<<<<<<<< Read keynum >>>>>>>>>>>>");
+  //Serial.println(kp);
   switch (kp) {
     case A:
       break;
@@ -121,10 +119,12 @@ void printScreen() {
   Serial.println(toPrint);
 
   // Allow space for all of toPrint plus the nextChar
-  lcd.setCursor(LCD_COLS - 1 - 1 - toPrintLen, 0);
+  lcd.setCursor(LCD_COLS - 1 - toPrintLen, 0);
+  lcd.print(toPrint);
 
   // Print placement character
   lcd.setCursor(LCD_COLS - 1, 0);
+  
   char nextChar = getstkchr();
   lcd.print(nextChar);
 
@@ -141,7 +141,7 @@ void logPress(keynum k) {
   stklen++;
   
   // check if stack is full
-  if (stkchr == 0 || (stklen == 3 && (stkchr == 7 || stkchr == 9)) || stklen == 4) {
+  if (stkchr == ZERO || (stklen == 3 && !(stkchr == 7 || stkchr == 9)) || stklen == 4) {
     // stack full
     flushStack();
   }
@@ -156,20 +156,67 @@ void deleteChar() {
 
 void clearBuffer() {
   buf[0] = 0;
+  bufend = buf;
   stklen = 0;
 }
 
 char getstkchr() {
-  if (stklen == 0  || stkchr == 0) {
+  Serial.println("<<<<<<<<<<<<< stack len >>>>>>>>>>>>");
+  Serial.println(stklen);
+  Serial.println("<<<<<<<<<<<<< stack chr >>>>>>>>>>>>");
+  Serial.println(stkchr);
+
+  if (stklen == 0  || stkchr == ZERO) {
     return ' ';
-  }
-  if (stklen == 4) {
-    if (stkchr == 7) return 's';
-    if (stkchr == 9) return 'z';
-    // assert unreachable
   }
 
   // stklen <= 3
   // stkchr <= 9 && stkchr > 0
-  return charsOfKeynumLens[stklen - 1, stkchr - 1];
+  switch (stklen) {
+    case 1:
+      switch (stkchr) {
+        case 2: return 'a';
+        case 3: return 'd';
+        case 4: return 'g';
+        case 5: return 'j';
+        case 6: return 'm';
+        case 7: return 'p';
+        case 8: return 't';
+        case 9: return 'w';
+      }
+      break;
+    case 2:
+      switch (stkchr) {
+        case 2: return 'b';
+        case 3: return 'e';
+        case 4: return 'h';
+        case 5: return 'k';
+        case 6: return 'n';
+        case 7: return 'q';
+        case 8: return 'u';
+        case 9: return 'x';
+      }
+      break;
+    case 3:
+      switch (stkchr) {
+        case 2: return 'c';
+        case 3: return 'f';
+        case 4: return 'i';
+        case 5: return 'l';
+        case 6: return 'o';
+        case 7: return 'r';
+        case 8: return 'v';
+        case 9: return 'y';
+      }
+      break;
+    case 4:
+      if (stkchr == 7) return 's';
+      if (stkchr == 9) return 'z';
+      break;
+  }
+  Serial.println("Failure: invalid stack char");
+  Serial.print("stkchr: "); Serial.println(stkchr);
+  Serial.print("stklen: "); Serial.println(stklen);
+  delay(1000);
+  exit(0);
 }
