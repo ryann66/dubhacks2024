@@ -116,6 +116,9 @@ void printScreen() {
   // LCD_COLS - 1 chars from buf.
   char* toPrint = max(bufend - LCD_COLS + 1, buf);
   int toPrintLen = strlen(toPrint);
+  
+  Serial.println("<<<<<<<<<<<<< To Print >>>>>>>>>>>>");
+  Serial.println(toPrint);
 
   // Allow space for all of toPrint plus the nextChar
   lcd.setCursor(LCD_COLS - 1 - 1 - toPrintLen, 0);
@@ -124,6 +127,9 @@ void printScreen() {
   lcd.setCursor(LCD_COLS - 1, 0);
   char nextChar = getstkchr();
   lcd.print(nextChar);
+
+  Serial.println("<<<<<<<<<<<<< Next Char >>>>>>>>>>>>");
+  Serial.println(nextChar);
 }
 
 void logPress(keynum k) {
